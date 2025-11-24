@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINAPP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="app-header">
+        <button id="btn-menu" class="icon-button" aria-label="Menu">
+            ☰
+        </button>
+
+        <div class="app-title">
+            <span id="app-title-main">FINAPP</span>
+            <span id="app-title-section">Pessoas</span>
+        </div>
+
+        <button id="btn-profile" class="icon-button" aria-label="Perfil e configurações">
+            ⚙
+        </button>
+    </header>
+
+    <main class="app-main">
+        <!-- Tela: Lista de Pessoas -->
+        <section id="screen-persons-list" data-screen>
+            <div class="screen-header">
+                <h1>Pessoas</h1>
+                <p>Clientes e fornecedores cadastrados.</p>
+            </div>
+
+            <div class="search-and-filters">
+                <input id="persons-search" type="search" placeholder="Buscar por nome, CPF ou CNPJ..."
+                    class="search-input" />
+
+                <!-- Uma única linha rolável de filtros -->
+                <div class="filters-row filters-row--scroll">
+                    <!-- Papéis -->
+                    <button data-filter-role="customer" class="filter-chip">
+                        Clientes
+                    </button>
+                    <button data-filter-role="supplier" class="filter-chip">
+                        Fornecedores
+                    </button>
+
+                    <!-- Status -->
+                    <button data-filter-status="active" class="filter-chip">
+                        Ativos
+                    </button>
+                    <button data-filter-status="inactive" class="filter-chip">
+                        Inativos
+                    </button>
+
+                    <!-- Tipo -->
+                    <button data-filter-type="pf" class="filter-chip">
+                        PF
+                    </button>
+                    <button data-filter-type="pj" class="filter-chip">
+                        PJ
+                    </button>
+                </div>
+            </div>
+
+            <div id="persons-list" class="cards-list">
+                <!-- Os cards serão inseridos via TypeScript -->
+            </div>
+        </section>
+
+        <!-- Tela: Detalhe da Pessoa (placeholder por enquanto) -->
+        <section id="screen-person-detail" data-screen hidden>
+            <div class="screen-header detail-header">
+                <button id="btn-person-back" class="back-button">
+                    ←
+                </button>
+                <div>
+                    <h1 id="person-detail-title">Pessoa</h1>
+                    <p id="person-detail-subtitle">Detalhes e edição do cadastro.</p>
+                </div>
+            </div>
+
+            <!-- Abas -->
+            <div class="tabs">
+                <button class="tab-button tab-button--active" data-tab="general">
+                    Geral
+                </button>
+                <button class="tab-button" data-tab="contact">
+                    Contato
+                </button>
+                <button class="tab-button" data-tab="address">
+                    Endereço
+                </button>
+                <button class="tab-button" data-tab="company" id="tab-company">
+                    Empresa
+                </button>
+                <button class="tab-button" data-tab="qsa" id="tab-qsa">
+                    QSA
+                </button>
+            </div>
+
+            <!-- Conteúdo das abas -->
+            <div class="tab-panels">
+                <!-- Aba Geral -->
+                <div class="tab-panel tab-panel--active" data-tab-panel="general">
+                    <div class="form-group">
+                        <label for="person-type">Tipo de pessoa</label>
+                        <select id="person-type">
+                            <option value="pf">Pessoa Física</option>
+                            <option value="pj">Pessoa Jurídica</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-document">CPF / CNPJ</label>
+                        <div class="inline-input-button">
+                            <input id="person-document" type="text" />
+                            <button id="btn-person-search-web" class="secondary-button" type="button" disabled>
+                                Buscar dados
+                            </button>
+                        </div>
+                        <p id="person-document-status" class="small-hint"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="label-date">Data de nascimento</label>
+                        <input id="person-date" type="date" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company-registration-status">Situação cadastral</label>
+                        <input id="company-registration-status" type="text" disabled class="readonly-input" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-name">Razão social / Nome</label>
+                        <input id="person-name" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company-trade-name">Nome fantasia / Nome social</label>
+                        <input id="company-trade-name" type="text" />
+                    </div>
+
+                    <div class="form-group form-group-inline">
+                        <label>Situação</label>
+                        <div class="status-row status-row-equal">
+                            <span id="person-status-badge" class="badge"></span>
+                            <button id="btn-person-toggle-active" class="status-toggle-button">
+                                Inativar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aba Contato -->
+                <div class="tab-panel" data-tab-panel="contact">
+                    <div class="form-group">
+                        <label for="person-email">E-mail</label>
+                        <input id="person-email" type="email" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-phone">Telefone principal</label>
+                        <input id="person-phone" type="tel" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-notes">Observações</label>
+                        <textarea id="person-notes" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Aba Endereço -->
+                <div class="tab-panel" data-tab-panel="address">
+                    <div class="form-group">
+                        <label for="person-zip">CEP</label>
+                        <input id="person-zip" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-street">Logradouro</label>
+                        <input id="person-street" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-number">Número</label>
+                        <input id="person-number" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-complement">Complemento</label>
+                        <input id="person-complement" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="person-district">Bairro</label>
+                        <input id="person-district" type="text" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="person-city">Cidade</label>
+                            <input id="person-city" type="text" />
+                        </div>
+                        <div class="form-group">
+                            <label for="person-state">UF</label>
+                            <input id="person-state" type="text" maxlength="2" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aba Empresa (PJ) -->
+                <div class="tab-panel" data-tab-panel="company">
+                    <p class="small-hint">
+                        Campos específicos de pessoa jurídica.
+                    </p>
+
+                    <div class="form-group">
+                        <label for="company-legal-nature">Natureza jurídica</label>
+                        <input id="company-legal-nature" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company-main-cnae">CNAE principal</label>
+                        <input id="company-main-cnae" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company-size">Porte da empresa</label>
+                        <input id="company-size" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company-capital">Capital social</label>
+                        <input id="company-capital" type="text" />
+                    </div>
+                </div>
+
+                <!-- Quadro Societário -->
+                <div class="tab-panel" data-tab-panel="qsa">
+                    <p class="small-hint">
+                        Quadro societário retornado pelo OpenCNPJ (somente para PJ).
+                    </p>
+
+                    <div id="partners-list" class="partners-list">
+                        <!-- cards de sócios serão renderizados via TypeScript -->
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="detail-actions">
+                <button id="btn-person-save" class="primary-button">
+                    Salvar
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Botão flutuante para adicionar nova pessoa -->
+    <button id="fab-add-person" class="fab" aria-label="Adicionar pessoa">
+        +
+    </button>
+
+    <!-- Script principal compilado -->
+    <script type="module" src="./dist/main.js"></script>
+</body>
+
+</html>
