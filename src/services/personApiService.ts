@@ -24,7 +24,7 @@ function mapApiPersonToDomain(row: any): Person {
       tradeName: row.tradeName ?? undefined,
       cadastralStatus: row.registrationStatus ?? undefined,
       cadastralStatusDate: row.registrationStatusDate ?? undefined,
-      foundationDate: row.foundationDate ?? row.openingDate ?? undefined,
+      foundationDate: row.foundationDate ?? undefined,
       mainCnae: row.mainCnae ?? undefined,
       companySize: row.companySize ?? undefined,
       capitalSocial: row.capitalSocial ?? undefined,
@@ -33,7 +33,7 @@ function mapApiPersonToDomain(row: any): Person {
       partners: undefined
     });
 
-    company.foundationDate = row.foundationDate ?? row.openingDate ?? undefined;
+    company.foundationDate = row.foundationDate ?? undefined;
     company.registrationStatus = row.registrationStatus ?? undefined;
     company.registrationStatusDate = row.registrationStatusDate ?? undefined;
     company.isActive = row.isActive ?? true;
@@ -57,7 +57,7 @@ function mapApiPersonToDomain(row: any): Person {
 }
 
 // mapDomainPersonToApi = mapearPessoaDominioParaApi
-function mapDomainPersonToApi(person: Person): any {
+export function mapDomainPersonToApi(person: Person): any {
   const common = {
     id: person.id,
     personType:
@@ -106,6 +106,30 @@ export async function fetchPersonById(id: string): Promise<Person | null> {
   }
   const row = await resp.json();
   return mapApiPersonToDomain(row);
+}
+
+// fetchPersonByDocument = buscarPessoaPorDocumento
+export async function fetchPersonByDocument(document: string): Promise<Person | null> {
+    const trimmed = document.trim();
+    if (!trimmed) {
+        return null;
+    }
+
+    const url = `${API_BASE_URL}/api/persons?document=${encodeURIComponent(trimmed)}`;
+
+    const resp = await fetch(url);
+    if (!resp.ok) {
+        throw new Error("Erro ao buscar pessoa por documento no backend");
+    }
+
+    const data = (await resp.json()) as any[];
+
+    if (!data || data.length === 0) {
+        return null;
+    }
+
+    // como nosso backend devolve array, pegamos o primeiro
+    return mapApiPersonToDomain(data[0]);
 }
 
 // savePerson = salvarPessoa

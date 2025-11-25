@@ -2,6 +2,7 @@
 
 import { Person, PersonType, PersonCompany, PersonIndividual, createCompany, createIndividual } from "../domain/person.js";
 import { IPersonRepository } from "./personRepository.js";
+import { mapDomainPersonToApi } from "../services/personApiService.js";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -22,14 +23,14 @@ function mapApiPersonToDomain(row: any): Person {
             mainCnae: row.mainCnae ?? undefined,
             companySize: row.companySize ?? undefined,
             capitalSocial: row.capitalSocial ?? undefined,
-            foundationDate: row.foundationDate ?? row.openingDate ?? undefined,
+            foundationDate: row.foundationDate ?? undefined,
             partners: undefined,  // depois preenchemos com QSA se existir
 
             phones: undefined,
             address: undefined
         });
 
-        company.foundationDate = row.foundationDate ?? row.openingDate ?? undefined;
+        company.foundationDate = row.foundationDate ?? undefined;
         company.registrationStatus = row.registrationStatus ?? undefined;
         company.registrationStatusDate = row.registrationStatusDate ?? undefined;
         company.isActive = row.isActive ?? true;
@@ -74,14 +75,38 @@ export class PersonRepositoryApi implements IPersonRepository {
     }
 
     async create(person: Person): Promise<void> {
-        // vamos implementar em um passo separado
-        throw new Error("Not implemented");
+        const payload = mapDomainPersonToApi(person);
+
+        const resp = await fetch("http://localhost:3000/api/persons", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (resp.status === 409) {
+            // documento já existe no backend
+            throw new Error("duplicate_document");
+        }
+
+        if (!resp.ok) {
+            throw new Error("Erro ao criar pessoa no backend");
+        }
     }
 
     async update(person: Person): Promise<void> {
-        // vamos implementar em um passo separado
-        throw new Error("Not implemented");
+        const payload = mapDomainPersonToApi(person);
+
+        const resp = await fetch(`http://localhost:3000/api/persons/${person.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) {
+            throw new Error("Erro ao atualizar pessoa no backend");
+        }
     }
+
 
     async delete(id: string): Promise<void> {
         // vamos implementar em um passo separado

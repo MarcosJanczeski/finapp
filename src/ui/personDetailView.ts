@@ -14,6 +14,7 @@ import { personRepository } from "../repositories/personRepositoryProvider.js";
 import { showScreen } from "./navigation.js";
 import { reloadPersonsList } from "./personsListView.js";
 import { OpenCnpjService } from "../services/openCnpjService.js";
+import { fetchPersonByDocument } from "../services/personApiService.js";
 
 let currentPerson: Person | null = null;
 
@@ -88,16 +89,29 @@ function setupButtons(): void {
     if (saveButton) {
         saveButton.addEventListener("click", async () => {
             if (!currentPerson) return;
+
             readFormIntoPerson(currentPerson);
 
-            if (isNewPerson) {
-                await personRepository.create(currentPerson);
-            } else {
-                await personRepository.update(currentPerson);
-            }
+            try {
+                if (isNewPerson) {
+                    await personRepository.create(currentPerson);
+                } else {
+                    await personRepository.update(currentPerson);
+                }
 
-            await reloadPersonsList();
-            showScreen("screen-persons-list");
+                await reloadPersonsList();
+                showScreen("screen-persons-list");
+
+            } catch (error: any) {
+                console.error("Erro ao salvar pessoa:", error);
+
+                if (error instanceof Error && error.message === "duplicate_document") {
+                    alert("Este CPF/CNPJ já está cadastrado no FINAPP.\n\nOs dados permanecerão na tela para revisão.");
+                    return; // não sai da tela
+                }
+
+                alert("Erro ao salvar. Tente novamente.");
+            }
         });
     }
 
@@ -236,6 +250,18 @@ function setupButtons(): void {
             }
 
             try {
+                // 1️⃣ TENTA BUSCAR PRIMEIRO NO FINAPP
+                const existing = await fetchPersonByDocument(rawCnpj);
+
+                if (existing) {
+                    // carrega este cadastro existente
+                    currentPerson = existing;
+                    fillFormFromPerson(currentPerson);
+                    alert("Este documento já está cadastrado no FINAPP. Carreguei os dados existentes.");
+                    return;
+                }
+
+                // 2️⃣ NÃO ACHOU NO FINAPP → BUSCA NO OPENCNPJ
                 const data = await openCnpjService.fetchCompanyByCnpj(rawCnpj);
 
                 // garante PJ

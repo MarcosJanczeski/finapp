@@ -20,6 +20,19 @@ app.get("/health", (req, res) => {
 // GET /api/persons → lista pessoas
 app.get("/api/persons", async (req, res) => {
   try {
+    const { document } = req.query as { document?: string };
+
+    if (document && document.trim() !== "") {
+      // busca por documento exato
+      const result = await db
+        .select()
+        .from(persons)
+        .where(eq(persons.document, document.trim()));
+
+      return res.json(result);
+    }
+
+    // sem filtro → lista tudo
     const result = await db.select().from(persons).orderBy(persons.name);
     res.json(result);
   } catch (error) {
@@ -49,6 +62,19 @@ app.get("/api/persons/:id", async (req, res) => {
 app.post("/api/persons", async (req, res) => {
   try {
     const body = req.body;
+
+    if (body.document) {
+      const exists = await db
+        .select()
+        .from(persons)
+        .where(eq(persons.document, body.document));
+
+      if (exists.length > 0) {
+        return res.status(409).json({
+          error: "CNPJ/CPF já cadastrado no sistema."
+        });
+      }
+    }
 
     if (!body.name || !body.document || !body.personType) {
       return res.status(400).json({ error: "Campos obrigatórios: name, document, personType" });
