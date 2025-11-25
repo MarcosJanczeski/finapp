@@ -77,7 +77,7 @@ export interface PersonCompany extends PersonBase {
     tradeName?: string;                 // nome fantasia
     cadastralStatus?: string;           // situação cadastral
     cadastralStatusDate?: string;       // data situação cadastral
-    openingDate?: string;               // data início atividade
+    foundationDate?: string;            // data de início de atividade
 
     mainCnae?: string;                  // CNAE principal
     secondaryCnaes?: string[];
@@ -137,7 +137,7 @@ export function createCompany(params: {
     address?: Address;
     cadastralStatus?: string;
     cadastralStatusDate?: string;
-    openingDate?: string;
+    foundationDate?: string;
     mainCnae?: string;
     secondaryCnaes?: string[];
     legalNature?: string;
@@ -162,7 +162,7 @@ export function createCompany(params: {
 
         cadastralStatus: params.cadastralStatus,
         cadastralStatusDate: params.cadastralStatusDate,
-        openingDate: params.openingDate,
+        foundationDate: params.foundationDate,
 
         mainCnae: params.mainCnae,
         secondaryCnaes: params.secondaryCnaes,

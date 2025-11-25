@@ -272,7 +272,7 @@ function setupButtons(): void {
                     company.mainCnae = data.cnae_principal ?? company.mainCnae;
                     company.companySize = data.porte_empresa ?? company.companySize;
                     company.capitalSocial = data.capital_social ?? company.capitalSocial;
-                    company.openingDate = data.data_inicio_atividade ?? company.openingDate;
+                    company.foundationDate = data.data_inicio_atividade ?? company.foundationDate;
                     company.registrationStatus = data.situacao_cadastral ?? company.registrationStatus;
                     company.registrationStatusDate = data.data_situacao_cadastral ?? company.registrationStatusDate;
 
@@ -369,7 +369,7 @@ function fillFormFromPerson(person: Person): void {
         if (dateInput) dateInput.value = (person as PersonIndividual).birthDate ?? "";
     } else {
         if (dateLabel) dateLabel.textContent = "Data de fundação";
-        if (dateInput) dateInput.value = (person as PersonCompany).openingDate ?? "";
+        if (dateInput) dateInput.value = (person as PersonCompany).foundationDate ?? "";
     }
 
     const emailInput = document.getElementById("person-email") as HTMLInputElement | null;
@@ -602,7 +602,7 @@ function readFormIntoPerson(person: Person): void {
     if (person.personType === PersonType.Individual) {
         (person as PersonIndividual).birthDate = dateInput?.value || "";
     } else {
-        (person as PersonCompany).openingDate = dateInput?.value || "";
+        (person as PersonCompany).foundationDate = dateInput?.value || "";
     }
 
 }

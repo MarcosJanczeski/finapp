@@ -3,13 +3,15 @@
 import { IPersonRepository } from "./personRepository.js";
 import { PersonRepositoryMemory } from "./personRepositoryMemory.js";
 import { createIndividual, createCompany } from "../domain/person.js";
+import { PersonRepositoryApi } from "./personRepositoryApi.js";
 
-export const personRepository: IPersonRepository = new PersonRepositoryMemory();
+export const personRepository: IPersonRepository = new PersonRepositoryApi();
 
-let demoSeeded = false;
+//let demoSeeded = false;
 
 // ensureDemoData = garantirDadosDemonstracao
 export async function ensureDemoData(): Promise<void> {
+    /* OS DADOS DE DEMONSTRAÇÃO FORAM DESATIVADOS PARA O USO DO POSTGRESQL
     if (demoSeeded) return;
 
     const existing = await personRepository.findAll();
@@ -35,4 +37,5 @@ export async function ensureDemoData(): Promise<void> {
     await personRepository.create(p2);
 
     demoSeeded = true;
+    */
 }

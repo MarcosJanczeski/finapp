@@ -115,7 +115,7 @@ export function mapOpenCnpjToPersonCompany(data: OpenCnpjApiCompany): PersonComp
 
         cadastralStatus: data.situacao_cadastral ?? undefined,
         cadastralStatusDate: data.data_situacao_cadastral ?? undefined,
-        openingDate: data.data_inicio_atividade ?? undefined,
+        foundationDate: data.data_inicio_atividade ?? undefined,
 
         mainCnae: data.cnae_principal ?? undefined,
         secondaryCnaes: data.cnaes_secundarios ?? undefined,
